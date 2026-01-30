@@ -14,10 +14,11 @@ Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
 
 ## Status
 
-✅ **Production Ready** — v1.0.0
-- 80 tests passing (40 functional + 40 adversarial), 100% pass rate
-- Six core algorithms: linear regression, logistic regression, decision trees, random forests, SVM, neural networks
-- Design by Contract throughout with 74 contract clauses
+✅ **Production Ready** — v1.1.0
+- 125 tests passing, 100% pass rate
+- 10 ML algorithms with regularization, kernel methods, ensemble learning
+- Design by Contract throughout
+- SCOOP concurrent-ready
 
 ## Quick Start
 
@@ -34,11 +35,14 @@ For complete documentation, see [our docs site](https://simple-eiffel.github.io/
 
 ## Features
 
+- **Supervised Learning** - Linear/Logistic Regression, SVM, KNN, Decision Trees, Random Forests, Neural Networks
+- **Regularization** - L1, L2, ElasticNet for linear models (v1.1.0+)
+- **Kernel Methods** - RBF and Polynomial kernels for SVM (v1.1.0+)
+- **Ensemble Methods** - Gradient Boosting classifier (v1.1.0+)
+- **Model Selection** - K-fold cross-validation, grid search (v1.1.0+)
+- **Probabilistic** - Naive Bayes classifier (v1.1.0+)
 - **Design by Contract** - Every algorithm fully specified with require/ensure/invariant
-- **Six Core Algorithms** - Linear/Logistic regression, Decision trees, Random forests, SVM, Neural networks
-- **Void-Safe & SCOOP** - Void-safe implementation (void_safety="all") with SCOOP concurrency support
-- **Production Quality** - 80 tests with 100% pass rate including adversarial hardening
-- **Zero Dependencies** - Only requires Eiffel base library (ISE)
+- **SCOOP Ready** - Void-safe (void_safety="all") with concurrent support
 
 For details, see the [User Guide](https://simple-eiffel.github.io/simple_ml/user-guide.html).
 

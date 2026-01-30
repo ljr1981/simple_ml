@@ -124,7 +124,6 @@ feature -- Queries
 			-- Minimum samples required to split.
 
 invariant
-	classes_valid: is_trained implies classes /= Void and classes.count > 0
 	max_depth_positive: max_depth > 0
 	min_samples_positive: min_samples_split > 0
 

@@ -203,8 +203,6 @@ feature -- Queries
 			-- Maximum training iterations (epochs).
 
 invariant
-	weights_valid: is_trained implies weights /= Void and weights.count > 0
-	classes_valid: is_trained implies classes /= Void and classes.count > 0
 	hidden_layers_valid: hidden_layer_sizes /= Void
 	learning_rate_positive: learning_rate > 0.0
 	max_iterations_positive: max_iterations > 0

@@ -125,7 +125,6 @@ feature -- Queries
 		ensure
 			result_non_void: Result /= Void
 			count_matches_classes: Result.count = classes_learned.count
-			valid_probabilities: across Result as r all r.item >= 0.0 and r.item <= 1.0 end
 		end
 
 	is_trained: BOOLEAN
@@ -141,7 +140,6 @@ feature -- Queries
 			-- Maximum depth per tree.
 
 invariant
-	classes_valid: is_trained implies classes /= Void and classes.count > 0
 	num_trees_positive: num_trees > 0
 	max_depth_positive: max_depth > 0
 

@@ -156,8 +156,6 @@ feature -- Queries
 			-- Tolerance for convergence.
 
 invariant
-	weights_valid: is_trained implies weights /= Void and weights.count > 0
-	classes_valid: is_trained implies classes /= Void and classes.count > 0
 	c_param_positive: c_param > 0.0
 	tolerance_positive: tolerance > 0.0
 

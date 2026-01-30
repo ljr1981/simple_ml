@@ -19,7 +19,7 @@
             <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
             <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
             <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
-            <img src="https://img.shields.io/badge/Tests-80%25-brightgreen.svg" alt="80 tests">
+            <img src="https://img.shields.io/badge/Tests-125%25-brightgreen.svg" alt="125 tests">
         </div>
     </header>
 
@@ -39,13 +39,18 @@
         <section id="overview">
             <h2>Overview</h2>
             <p>
-                <strong>simple_ml</strong> is a comprehensive machine learning library for Eiffel, providing
-                production-ready implementations of six core algorithms: linear regression, logistic regression,
-                decision trees, random forests, support vector machines, and neural networks.
+                <strong>simple_ml v1.1.0</strong> is a comprehensive machine learning library for Eiffel, providing
+                production-ready implementations of 10 algorithms: linear/logistic regression, decision trees, random forests,
+                support vector machines (linear, RBF, polynomial kernels), neural networks, K-nearest neighbors, Naive Bayes,
+                and gradient boosting.
             </p>
             <p>
-                Every algorithm is implemented with <strong>Design by Contract</strong> throughout, ensuring correctness,
-                safety, and predictability. The library is fully void-safe, SCOOP-compatible, and has zero external dependencies.
+                v1.1.0 adds regularization techniques (L1, L2, ElasticNet), kernel methods for SVM, model selection tools
+                (k-fold cross-validation, grid search), and new probabilistic classifiers. Every algorithm is implemented with
+                <strong>Design by Contract</strong> throughout, ensuring correctness, safety, and predictability.
+            </p>
+            <p>
+                The library is fully void-safe, SCOOP-compatible, and has zero external dependencies.
             </p>
             <p>
                 Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.

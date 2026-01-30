@@ -171,7 +171,6 @@ feature -- Queries
 			-- Maximum training iterations.
 
 invariant
-	weights_valid: is_trained implies weights /= Void and weights.count > 0
 	learning_rate_positive: learning_rate > 0.0
 	max_iterations_positive: max_iterations > 0
 

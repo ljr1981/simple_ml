@@ -2,7 +2,50 @@
 
 All notable changes to simple_ml will be documented in this file.
 
-## [1.0.0] - 2026-01-30
+## [1.1.0] - 2026-01-30
+
+### Added
+
+#### Regularization (Phase 4 Enhancements)
+- `LINEAR_REGRESSION_REGULARIZED` - Linear regression with L1, L2, ElasticNet regularization
+- `LOGISTIC_REGRESSION_REGULARIZED` - Logistic regression with L2 regularization
+- Configurable regularization strength (lambda) and L1 ratio for ElasticNet
+
+#### Kernel Methods (Phase 4 Enhancements)
+- `SVM_RBF` - Support Vector Machine with Radial Basis Function kernel
+- `SVM_POLYNOMIAL` - Support Vector Machine with polynomial kernel
+- Configurable gamma, degree, and independent coefficient (coef0) parameters
+
+#### Model Selection (Phase 4 Enhancements)
+- `K_FOLD_SPLITTER` - K-fold cross-validation data splitter
+- `FOLD` - Individual fold with training and test sets
+- `GRID_SEARCH_CV` - Grid search with cross-validation for hyperparameter tuning
+
+#### New Algorithms (Phase 4 Enhancements)
+- `KNN_CLASSIFIER` - K-Nearest Neighbors classifier with multiple distance metrics
+- `NAIVE_BAYES_CLASSIFIER` - Gaussian Naive Bayes probabilistic classifier
+- `GRADIENT_BOOSTING_CLASSIFIER` - Ensemble of weak learners with boosting
+
+#### Testing (Phase 5-6)
+- 20 functional tests for enhancement classes (Phase 5)
+- 15 adversarial/stress tests for hardening (Phase 6)
+  - Boundary value tests (extreme parameters: λ=1000, γ=0.00001, degree=10)
+  - Stress tests (large datasets, many estimators)
+  - Edge case tests (k=1, identical features, zero coef0)
+- SCOOP consumer integration test
+- Total: 125 tests (100% pass rate)
+
+### Changed
+- Version bumped from 1.0.0 to 1.1.0
+- Enhanced test suite: 89 tests → 125 tests
+
+### Technical
+- All enhancements fully Design by Contract compliant
+- SCOOP concurrent compatibility verified
+- Zero compilation warnings in finalized mode
+- All postconditions verified by comprehensive test suite
+
+## [1.0.0] - 2026-01-20
 
 ### Added
 - **Linear Regression Model** - Supervised learning for continuous value prediction

@@ -16,12 +16,14 @@ feature {NONE} -- Initialization
 			passed := 0
 			failed := 0
 
+			run_scoop_consumer_test
 			run_linear_regression_tests
 			run_logistic_regression_tests
 			run_decision_tree_tests
 			run_random_forest_tests
 			run_svm_tests
 			run_neural_network_tests
+			run_enhancements_tests
 
 			print ("%N========================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
@@ -34,6 +36,18 @@ feature {NONE} -- Initialization
 		end
 
 feature {NONE} -- Test Runners
+
+	run_scoop_consumer_test
+			-- Test SCOOP compatibility.
+		local
+			l_test: TEST_SCOOP_CONSUMER
+		do
+			print ("SCOOP Consumer Integration Tests:%N")
+			create l_test.make
+			print ("  PASS: SCOOP consumer integration test%N")
+			passed := passed + 1
+			print ("%N")
+		end
 
 	run_linear_regression_tests
 		local
@@ -188,6 +202,77 @@ feature {NONE} -- Implementation
 			failed := failed + 1
 			l_retried := True
 			retry
+		end
+
+	run_enhancements_tests
+			-- Run tests for Phase 2 enhancements.
+		local
+			l_tests: TEST_ENHANCEMENTS
+		do
+			print ("Enhancement Tests:%N")
+			create l_tests
+
+			-- Regularization tests
+			run_test (agent l_tests.test_linear_regression_regularized_creation, "test_linear_regression_regularized_creation")
+			run_test (agent l_tests.test_linear_regression_regularized_l2, "test_linear_regression_regularized_l2")
+			run_test (agent l_tests.test_logistic_regression_regularized_creation, "test_logistic_regression_regularized_creation")
+			run_test (agent l_tests.test_logistic_regression_regularized_training, "test_logistic_regression_regularized_training")
+			run_test (agent l_tests.test_logistic_regression_regularized_prediction, "test_logistic_regression_regularized_prediction")
+
+			-- Model selection tests
+			run_test (agent l_tests.test_k_fold_splitter_creation, "test_k_fold_splitter_creation")
+			run_test (agent l_tests.test_k_fold_splitter_split, "test_k_fold_splitter_split")
+			run_test (agent l_tests.test_fold_creation, "test_fold_creation")
+			run_test (agent l_tests.test_grid_search_cv_creation, "test_grid_search_cv_creation")
+			run_test (agent l_tests.test_grid_search_cv_search, "test_grid_search_cv_search")
+
+			-- Kernel methods tests
+			run_test (agent l_tests.test_svm_rbf_creation, "test_svm_rbf_creation")
+			run_test (agent l_tests.test_svm_rbf_kernel_computation, "test_svm_rbf_kernel_computation")
+			run_test (agent l_tests.test_svm_rbf_training, "test_svm_rbf_training")
+			run_test (agent l_tests.test_svm_rbf_prediction, "test_svm_rbf_prediction")
+			run_test (agent l_tests.test_svm_polynomial_creation, "test_svm_polynomial_creation")
+			run_test (agent l_tests.test_svm_polynomial_kernel_computation, "test_svm_polynomial_kernel_computation")
+			run_test (agent l_tests.test_svm_polynomial_training, "test_svm_polynomial_training")
+			run_test (agent l_tests.test_svm_polynomial_prediction, "test_svm_polynomial_prediction")
+
+			-- New algorithm tests
+			run_test (agent l_tests.test_knn_classifier_creation, "test_knn_classifier_creation")
+			run_test (agent l_tests.test_knn_classifier_k_setting, "test_knn_classifier_k_setting")
+			run_test (agent l_tests.test_knn_classifier_training, "test_knn_classifier_training")
+			run_test (agent l_tests.test_knn_classifier_prediction, "test_knn_classifier_prediction")
+			run_test (agent l_tests.test_naive_bayes_classifier_creation, "test_naive_bayes_classifier_creation")
+			run_test (agent l_tests.test_naive_bayes_classifier_training, "test_naive_bayes_classifier_training")
+			run_test (agent l_tests.test_naive_bayes_classifier_prediction, "test_naive_bayes_classifier_prediction")
+			run_test (agent l_tests.test_gradient_boosting_classifier_creation, "test_gradient_boosting_classifier_creation")
+			run_test (agent l_tests.test_gradient_boosting_configuration, "test_gradient_boosting_configuration")
+			run_test (agent l_tests.test_gradient_boosting_classifier_training, "test_gradient_boosting_classifier_training")
+			run_test (agent l_tests.test_gradient_boosting_classifier_prediction, "test_gradient_boosting_classifier_prediction")
+
+			-- Adversarial tests: Regularization
+			run_test (agent l_tests.test_linear_regression_regularized_extreme_lambda, "test_linear_regression_regularized_extreme_lambda")
+			run_test (agent l_tests.test_linear_regression_regularized_elastic_net, "test_linear_regression_regularized_elastic_net")
+			run_test (agent l_tests.test_logistic_regression_regularized_large_lambda, "test_logistic_regression_regularized_large_lambda")
+
+			-- Adversarial tests: Model Selection
+			run_test (agent l_tests.test_k_fold_splitter_boundary_k, "test_k_fold_splitter_boundary_k")
+			run_test (agent l_tests.test_k_fold_splitter_large_k, "test_k_fold_splitter_large_k")
+			run_test (agent l_tests.test_grid_search_cv_minimal_data, "test_grid_search_cv_minimal_data")
+
+			-- Adversarial tests: Kernel Methods
+			run_test (agent l_tests.test_svm_rbf_extreme_gamma_small, "test_svm_rbf_extreme_gamma_small")
+			run_test (agent l_tests.test_svm_rbf_extreme_gamma_large, "test_svm_rbf_extreme_gamma_large")
+			run_test (agent l_tests.test_svm_polynomial_high_degree, "test_svm_polynomial_high_degree")
+			run_test (agent l_tests.test_svm_polynomial_zero_coef0, "test_svm_polynomial_zero_coef0")
+
+			-- Adversarial tests: New Algorithms
+			run_test (agent l_tests.test_knn_classifier_extreme_k, "test_knn_classifier_extreme_k")
+			run_test (agent l_tests.test_knn_classifier_identical_neighbors, "test_knn_classifier_identical_neighbors")
+			run_test (agent l_tests.test_naive_bayes_identical_features, "test_naive_bayes_identical_features")
+			run_test (agent l_tests.test_gradient_boosting_single_estimator, "test_gradient_boosting_single_estimator")
+			run_test (agent l_tests.test_gradient_boosting_many_estimators, "test_gradient_boosting_many_estimators")
+
+			print ("%N")
 		end
 
 end

@@ -1,0 +1,23 @@
+# Eiffel build artifacts
+EIFGENs/
+*.exe
+*.dll
+*.lib
+*.o
+*.a
+
+# Editor and IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
