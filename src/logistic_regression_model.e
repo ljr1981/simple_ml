@@ -122,15 +122,8 @@ feature -- Training
 						l_j := l_j + 1
 					end
 
-					-- Compute sigmoid using linear approximation
-					if l_logit > 5.0 then
-						l_prob := 1.0
-					elseif l_logit < -5.0 then
-						l_prob := 0.0
-					else
-						-- Linear approximation near 0: sigmoid(z) ≈ 0.5 + 0.125*z
-						l_prob := 0.5 + (0.125 * l_logit)
-					end
+					-- Compute sigmoid using real mathematical function
+					l_prob := activation_functions.sigmoid (l_logit)
 
 					-- Binary error (assume first class is 0, second is 1)
 					if a_y [l_i] = classes [classes.lower] then
@@ -210,15 +203,8 @@ feature -- Queries
 				l_j := l_j + 1
 			end
 
-			-- Compute sigmoid using linear approximation
-			if l_logit > 5.0 then
-				Result := 1.0
-			elseif l_logit < -5.0 then
-				Result := 0.0
-			else
-				-- Linear approximation near 0: sigmoid(z) ≈ 0.5 + 0.125*z
-				Result := 0.5 + (0.125 * l_logit)
-			end
+			-- Compute sigmoid using real mathematical function
+			Result := activation_functions.sigmoid (l_logit)
 		ensure
 			result_in_range: Result >= 0.0 and Result <= 1.0
 		end
@@ -240,6 +226,14 @@ feature -- Queries
 
 	max_iterations: INTEGER
 			-- Maximum training iterations.
+
+feature {NONE} -- Implementation
+
+	activation_functions: ACTIVATION_FUNCTIONS
+			-- Activation functions for sigmoid, etc.
+		once
+			create Result.make
+		end
 
 invariant
 	learning_rate_positive: learning_rate > 0.0

@@ -168,12 +168,8 @@ feature -- Prediction
 
 			-- For binary classification, return probability and its complement
 			if classes.count = 2 then
-				-- Sigmoid approximation instead of exponential
-			if l_score > 0.0 then
-				Result [1] := l_score / (l_score + 1.0)
-			else
-				Result [1] := 1.0 / (1.0 - l_score)
-			end
+				-- Real sigmoid probability
+				Result [1] := activation_functions.sigmoid (l_score)
 				Result [2] := 1.0 - Result [1]
 			else
 				-- Simplified multiclass: uniform distribution
@@ -214,6 +210,12 @@ feature {NONE} -- Implementation
 	weights: ARRAY [REAL_64]
 	bias: REAL_64
 	classes: ARRAY [INTEGER]
+
+	activation_functions: ACTIVATION_FUNCTIONS
+			-- Activation functions for sigmoid, etc.
+		once
+			create Result.make
+		end
 
 invariant
 	learning_rate_positive: learning_rate > 0.0

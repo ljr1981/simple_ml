@@ -13,7 +13,8 @@
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 
 		<!-- Simple Eiffel Ecosystem (preferred) -->
-		<library name="simple_linalg" location="d:\prod\simple_linalg\simple_linalg.ecf"/>
+		<library name="simple_math" location="d:\prod\simple_math\simple_math.ecf"/>
+	<library name="simple_linalg" location="d:\prod\simple_linalg\simple_linalg.ecf"/>
 		<library name="simple_optimization" location="d:\prod\simple_optimization\simple_optimization.ecf"/>
 		<library name="simple_statistics" location="d:\prod\simple_statistics\simple_statistics.ecf"/>
 		<library name="simple_randomizer" location="d:\prod\simple_randomizer\simple_randomizer.ecf"/>

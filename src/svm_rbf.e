@@ -164,9 +164,10 @@ feature -- Kernel Operations
 			end
 
 			-- RBF kernel: exp(-gamma * distance²)
-			Result := 1.0 / (1.0 + gamma * l_dist_sq)
+			Result := activation_functions.rbf_kernel (l_dist_sq, gamma)
 		ensure
-			result_in_range: Result >= 0.0 and Result <= 1.0
+			result_positive: Result > 0.0
+			result_bounded: Result <= 1.0
 		end
 
 feature -- Status
@@ -195,6 +196,12 @@ feature {NONE} -- Implementation
 	support_vector_coefficients: ARRAY [REAL_64]
 	classes: ARRAY [INTEGER]
 	bias: REAL_64
+
+	activation_functions: ACTIVATION_FUNCTIONS
+			-- Activation functions for RBF kernel.
+		once
+			create Result.make
+		end
 
 invariant
 	c_param_positive: c_param > 0.0

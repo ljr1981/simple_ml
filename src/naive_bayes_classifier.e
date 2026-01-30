@@ -238,17 +238,16 @@ feature {NONE} -- Implementation
 			-- Compute Gaussian probability density function.
 		require
 			variance_positive: a_variance > 0.0
-		local
-			l_pi: REAL_64
-			l_diff: REAL_64
 		do
-			l_pi := 3.14159265358979
-			l_diff := a_x - a_mean
-			-- Simplified: return coefficient * exp(-(diff^2) / (2*variance))
-			-- For now, return simplified version
-			Result := 1.0 / (a_variance + 1.0)
+			Result := activation_functions.gaussian_pdf (a_x, a_mean, a_variance)
 		ensure
-			result_non_negative: Result >= 0.0
+			result_positive: Result > 0.0
+		end
+
+	activation_functions: ACTIVATION_FUNCTIONS
+			-- Activation functions for gaussian_pdf.
+		once
+			create Result.make
 		end
 
 invariant

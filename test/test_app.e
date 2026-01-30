@@ -17,6 +17,7 @@ feature {NONE} -- Initialization
 			failed := 0
 
 			run_scoop_consumer_test
+			run_activation_function_tests
 			run_linear_regression_tests
 			run_logistic_regression_tests
 			run_decision_tree_tests
@@ -46,6 +47,24 @@ feature {NONE} -- Test Runners
 			create l_test.make
 			print ("  PASS: SCOOP consumer integration test%N")
 			passed := passed + 1
+			print ("%N")
+		end
+
+	run_activation_function_tests
+		local
+			l_tests: TEST_ACTIVATION_FUNCTIONS
+		do
+			print ("Activation Functions Tests:%N")
+			create l_tests
+			run_test (agent l_tests.test_sigmoid_zero, "test_sigmoid_zero")
+			run_test (agent l_tests.test_sigmoid_large_positive, "test_sigmoid_large_positive")
+			run_test (agent l_tests.test_sigmoid_large_negative, "test_sigmoid_large_negative")
+			run_test (agent l_tests.test_sigmoid_derivative_zero, "test_sigmoid_derivative_zero")
+			run_test (agent l_tests.test_relu_positive, "test_relu_positive")
+			run_test (agent l_tests.test_relu_negative, "test_relu_negative")
+			run_test (agent l_tests.test_rbf_kernel_zero_distance, "test_rbf_kernel_zero_distance")
+			run_test (agent l_tests.test_gaussian_pdf_at_mean, "test_gaussian_pdf_at_mean")
+			run_test (agent l_tests.test_tanh_zero, "test_tanh_zero")
 			print ("%N")
 		end
 
