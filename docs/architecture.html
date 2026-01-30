@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - simple_ml</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_ml</h1>
+        <p class="tagline">Design and Architecture</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_ml">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Design Principles</h2>
+            <p>
+                simple_ml is built on the OOSC2 (Object-Oriented Software Construction 2nd Edition) principles
+                with emphasis on Design by Contract (DBC) and correctness:
+            </p>
+            <ul>
+                <li><strong>Single Responsibility:</strong> Each class handles one algorithm</li>
+                <li><strong>Design by Contract:</strong> All features have complete require/ensure/invariant specifications</li>
+                <li><strong>Information Hiding:</strong> Implementation details are private, only contracts are public</li>
+                <li><strong>Void Safety:</strong> All code is void-safe (void_safety="all")</li>
+                <li><strong>Command-Query Separation:</strong> Queries don't modify state, commands do</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Class Hierarchy</h2>
+            <p>
+                Each algorithm is independently implemented without artificial inheritance hierarchies.
+                This follows the principle that IS-A relationships should only be used for true behavioral substitutability.
+            </p>
+            <pre><code>LINEAR_REGRESSION_MODEL          (regression, continuous output)
+LOGISTIC_REGRESSION_MODEL       (classification, probability output)
+DECISION_TREE_CLASSIFIER        (classification, tree-based)
+RANDOM_FOREST_CLASSIFIER       (classification, ensemble)
+SVM_LINEAR                      (classification, support vector)
+NEURAL_NETWORK_CLASSIFIER      (classification, neural network)</code></pre>
+            <p>
+                All classes share a consistent API pattern but do not inherit from a base class,
+                preventing artificial coupling and allowing independent evolution.
+            </p>
+        </section>
+
+        <section>
+            <h2>Consistent API Pattern</h2>
+            <p>
+                Despite being independent, all models follow a common interface pattern:
+            </p>
+            <pre><code>-- Creation
+create {MODEL_CLASS}.make
+
+-- Configuration (fluent API)
+.set_learning_rate (rate)
+.set_max_iterations (max)
+
+-- Training
+.train (X, y)
+
+-- Prediction
+.predict (x)
+.predict_proba (x)  -- where applicable</code></pre>
+            <p>
+                This consistency allows users to switch algorithms with minimal code changes.
+            </p>
+        </section>
+
+        <section>
+            <h2>Design by Contract Details</h2>
+
+            <h3>Preconditions</h3>
+            <p>Define what must be true before a feature executes:</p>
+            <ul>
+                <li><code>train()</code> requires non-void, non-empty data with matching dimensions</li>
+                <li><code>predict()</code> requires trained model and feature vector of correct dimension</li>
+                <li>Configuration methods require positive hyperparameters (learning_rate > 0, iterations > 0)</li>
+            </ul>
+
+            <h3>Postconditions</h3>
+            <p>Guarantee what is true after successful feature execution:</p>
+            <ul>
+                <li><code>train()</code> ensures is_trained=true and weights/classes initialized</li>
+                <li><code>predict()</code> ensures result is in learned classes</li>
+                <li><code>set_*()</code> ensures configuration updated and returns Current for chaining</li>
+            </ul>
+
+            <h3>Invariants</h3>
+            <p>Maintained throughout object lifetime:</p>
+            <ul>
+                <li>learning_rate > 0.0 (always positive)</li>
+                <li>max_iterations > 0 (always positive)</li>
+                <li>is_trained is consistent with internal state</li>
+                <li>Collections (weights, classes) are properly initialized</li>
+            </ul>
+
+            <h3>Model Queries (MML)</h3>
+            <p>
+                Each model provides mathematical model queries using the Mathematical Model Library (MML):
+            </p>
+            <ul>
+                <li><code>features_learned: MML_SET [INTEGER]</code> - Set of learned feature indices</li>
+                <li><code>classes_learned: MML_SET [INTEGER]</code> - Set of unique classes learned</li>
+            </ul>
+            <p>
+                These enable precise postcondition specifications: "classes_learned must contain the predicted class".
+            </p>
+        </section>
+
+        <section>
+            <h2>Configuration Pattern (Builder-like)</h2>
+            <p>
+                Models use a builder-like pattern with fluent configuration:
+            </p>
+            <pre><code>-- Configuration is optional (has sensible defaults)
+model := create {LINEAR_REGRESSION_MODEL}.make
+    .set_learning_rate (0.001)     -- override default 0.01
+    .set_max_iterations (500)      -- override default 100
+
+-- Returns Current for method chaining
+-- All set_* methods have signature: set_*(value): like Current</code></pre>
+            <p>
+                Benefits:
+                <ul>
+                    <li>Sensible defaults mean simple cases require no configuration</li>
+                    <li>Fluent API improves readability</li>
+                    <li>Configuration is orthogonal to training logic</li>
+                </ul>
+            </p>
+        </section>
+
+        <section>
+            <h2>State Machine</h2>
+            <p>
+                Each model follows a simple state machine:
+            </p>
+            <pre><code>               create
+                  |
+                  v
+          [UNCONFIGURED]
+          (is_trained = false)
+                  |
+           set_learning_rate,
+           set_max_iterations
+                  |
+                  v
+           [CONFIGURED]
+          (ready for training)
+                  |
+               train()
+                  |
+                  v
+            [TRAINED]
+          (can predict)
+                  |
+            predict()  (loops in state)</code></pre>
+            <p>
+                Training can be called multiple times, overwriting previous weights.
+                State is validated by postconditions.
+            </p>
+        </section>
+
+        <section>
+            <h2>Training Algorithm Patterns</h2>
+
+            <h3>Gradient-Based (Linear, Logistic Regression)</h3>
+            <pre><code>for iteration = 1 to max_iterations:
+    for each sample:
+        compute prediction
+        compute error (prediction - target)
+        accumulate gradient
+    update weights: w -= learning_rate * (gradient / sample_count)</code></pre>
+
+            <h3>Tree-Based (Decision Tree, Random Forest)</h3>
+            <pre><code>Linear recursive splitting with depth limits:
+    if depth >= max_depth or samples < min_split:
+        return majority class
+    else:
+        for each feature:
+            find best split
+        recurse on children</code></pre>
+
+            <h3>Ensemble (Random Forest)</h3>
+            <pre><code>multiple_trees = []
+for i = 1 to num_trees:
+    sample training data (with replacement)
+    train decision tree on sample
+    add to ensemble
+
+predict: majority vote across all trees</code></pre>
+
+            <h3>Support Vector Machines (SVM)</h3>
+            <pre><code>Initialize weights to zero
+decision_value(x) = x @ weights + bias
+predict: class = argmax(decision_value for each class)</code></pre>
+
+            <h3>Neural Networks</h3>
+            <pre><code>Architecture: input -> hidden_layers -> output
+Initialize weights to 0.01
+forward: x -> h1 -> h2 -> ... -> logits -> softmax
+backward: update all weights (simplified, no full backprop)</code></pre>
+        </section>
+
+        <section>
+            <h2>Numerical Considerations</h2>
+
+            <h3>Sigmoid Approximation</h3>
+            <p>
+                Instead of true sigmoid using exponential (e^-z), we use linear approximation:
+            </p>
+            <pre><code>true_sigmoid(z) = 1 / (1 + e^-z)
+
+linear_approx(z) = 0.5 + 0.125 * z  (for -5 < z < 5)
+clipped(z) = 1.0   (for z >= 5)
+clipped(z) = 0.0   (for z <= -5)</code></pre>
+            <p>
+                This avoids exponential overflow while maintaining numerical stability.
+            </p>
+
+            <h3>Gradient Normalization</h3>
+            <p>
+                Gradients are normalized by sample count to maintain consistent learning rates
+                across different dataset sizes.
+            </p>
+        </section>
+
+        <section>
+            <h2>Testing Architecture</h2>
+
+            <h3>Test Coverage</h3>
+            <ul>
+                <li><strong>Functional Tests (40):</strong> Verify core functionality and postconditions</li>
+                <li><strong>Adversarial Tests (40):</strong> Boundary values, stress tests, edge cases</li>
+            </ul>
+
+            <h3>Test Categories</h3>
+            <ul>
+                <li><strong>Initialization:</strong> make() creates unconfigured model</li>
+                <li><strong>Configuration:</strong> set_*() methods update and return Current</li>
+                <li><strong>Training:</strong> train() updates state and initializes parameters</li>
+                <li><strong>Prediction:</strong> predict() returns valid learned class</li>
+                <li><strong>Boundary Values:</strong> Extreme learning rates, feature counts, iterations</li>
+                <li><strong>Stress Tests:</strong> Large datasets, high dimensions, many classes</li>
+            </ul>
+
+            <h3>Assertion Checking</h3>
+            <p>
+                All tests run with full DBC assertion checking enabled:
+                <ul>
+                    <li>Preconditions checked at method entry</li>
+                    <li>Postconditions checked at method exit</li>
+                    <li>Invariants checked throughout execution</li>
+                </ul>
+            </p>
+        </section>
+
+        <section>
+            <h2>Extension Points</h2>
+
+            <h3>Future Enhancements</h3>
+            <p>
+                The architecture supports future additions without breaking existing interfaces:
+            </p>
+            <ul>
+                <li><strong>Kernel Methods:</strong> Add SVM_RBF for radial basis function kernel</li>
+                <li><strong>Regularization:</strong> Add L1/L2 regularization parameters to linear models</li>
+                <li><strong>Cross-Validation:</strong> Add model selection features</li>
+                <li><strong>More Algorithms:</strong> KNN, Naive Bayes, Gradient Boosting</li>
+                <li><strong>Parallel Training:</strong> SCOOP support for multi-core gradient descent</li>
+            </ul>
+
+            <h3>Design Considerations</h3>
+            <p>
+                Future additions would:
+                <ul>
+                    <li>Maintain separate classes (no artificial inheritance)</li>
+                    <li>Follow existing API patterns for consistency</li>
+                    <li>Include complete DBC specifications</li>
+                    <li>Add corresponding test suites (functional + adversarial)</li>
+                </ul>
+            </p>
+        </section>
+
+        <section>
+            <h2>Performance Characteristics</h2>
+
+            <table>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Training Time</th>
+                    <th>Prediction Time</th>
+                    <th>Memory Usage</th>
+                    <th>Scalability</th>
+                </tr>
+                <tr>
+                    <td>Linear Regression</td>
+                    <td>O(iterations × samples × features)</td>
+                    <td>O(features)</td>
+                    <td>O(features)</td>
+                    <td>Excellent</td>
+                </tr>
+                <tr>
+                    <td>Logistic Regression</td>
+                    <td>O(iterations × samples × features)</td>
+                    <td>O(features)</td>
+                    <td>O(features)</td>
+                    <td>Excellent</td>
+                </tr>
+                <tr>
+                    <td>Decision Tree</td>
+                    <td>O(samples × features × depth)</td>
+                    <td>O(depth)</td>
+                    <td>O(nodes)</td>
+                    <td>Good</td>
+                </tr>
+                <tr>
+                    <td>Random Forest</td>
+                    <td>O(num_trees × samples × features × depth)</td>
+                    <td>O(num_trees × depth)</td>
+                    <td>O(num_trees × nodes)</td>
+                    <td>Fair</td>
+                </tr>
+                <tr>
+                    <td>SVM Linear</td>
+                    <td>O(samples × features)</td>
+                    <td>O(features)</td>
+                    <td>O(features)</td>
+                    <td>Excellent</td>
+                </tr>
+                <tr>
+                    <td>Neural Network</td>
+                    <td>O(iterations × samples × weights)</td>
+                    <td>O(weights)</td>
+                    <td>O(weights)</td>
+                    <td>Fair</td>
+                </tr>
+            </table>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_ml">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>

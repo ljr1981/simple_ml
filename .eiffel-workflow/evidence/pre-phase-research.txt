@@ -1,0 +1,291 @@
+# Pre-Phase Research Evidence
+# Project: d:\prod\simple_ml
+# Date: 2026-01-29
+
+## Research Completion Status
+
+Research completed: YES
+Steps completed: 7/7 (SCOPE, LANDSCAPE, REQUIREMENTS, DECISIONS, INNOVATIONS, RISKS, RECOMMENDATION)
+Recommendation: BUILD (native implementation)
+Confidence: HIGH (80%+)
+
+## Scope Analysis
+
+Problem Statement: Enterprise and educational applications need contract-verified ML algorithms integrated with Eiffel's Design by Contract and simple_* ecosystem
+
+Target Users: 5 identified (enterprise data scientists, research institutions, fintech/healthtech, autonomous systems, academia)
+
+Success Criteria: MVP covers 5 functional requirements (algorithms), data preprocessing, model evaluation, contracts on everything, integration with simple_*
+
+In Scope (MUST): 6 core supervised learning algorithms, evaluation metrics, data preprocessing, gradient-based optimization, contracts
+Out of Scope: GPU acceleration (Phase 2), distributed training, deep learning frameworks, clustering/PCA (Phase 2), time series
+
+Constraints Documented: 10 major constraints (SCOOP, void-safe, simple_* first, ZERO warnings, MIT license, CPU-only MVP, single-threaded training initially, in-memory datasets, Eiffel 25.02+)
+
+Research Questions: 10 open questions identified and researched
+
+## Landscape Analysis
+
+Existing Solutions Researched: 6 major solutions analyzed
+- scikit-learn (Python): MATURE, 85% relevance, classical ML best-in-class
+- TensorFlow (Python): MATURE, 60% relevance, overkill for MVP
+- PyTorch (Python): MATURE, 55% relevance, research-oriented
+- Algae (Eiffel): DORMANT, 5% relevance, historical
+- EiffelMath (Eiffel): DORMANT, 10% relevance, historical
+- TensorFlow C API Wrapper: EXPERIMENTAL, 30% relevance, not Eiffel-idiomatic
+
+Eiffel Ecosystem Check: COMPLETE
+- ISE Libraries: base, time, testing identified as allowed
+- simple_* Libraries: 7 libraries reviewed (linalg, optimization, statistics, montecarlo, random, calculus, mml)
+- Gobo Libraries: Evaluated; simple_* preferred
+
+Gap Analysis: Formal verification of ML is missing from entire landscape
+- WFVML 2024 shows research emerging but NO production libraries
+- Contract-based ML verification: UNIQUE TO simple_ml proposal
+
+Comparison Matrix: Created with 10 features across 4 solutions
+- simple_ml BEST in: Contracts, Transparency, Verification, Educational value, Eiffel integration, Interpretability
+- Existing solutions BEST in: Speed, GPU, Scalability, Feature count
+
+Patterns Identified: 9 patterns researched (builder pattern, transformer API, lazy evaluation, ensemble voting, callbacks, contract checking)
+
+Build vs Buy Analysis: BUILD chosen (95% fit, unique positioning)
+
+Market Positioning: simple_ml fills genuine niche - NO OTHER LIBRARY combines ML with formal verification
+
+## Requirements Analysis
+
+Functional Requirements: 18 identified
+- 6 MUST algorithms (MVP)
+- 3 MUST supporting frameworks (evaluation, preprocessing, optimization)
+- 3 SHOULD features (configuration, serialization, visualization)
+- 6 DEFERRED to Phase 2+ (clustering, PCA, time series, advanced algorithms)
+
+Non-Functional Requirements: 14 identified
+- Correctness (100% Design by Contract) - MANDATORY
+- Numerical stability (IEEE 754 compliance) - MANDATORY
+- Performance targets documented
+- Void-safety and SCOOP compatibility - MANDATORY
+- Code clarity and educational value - CORE VALUE
+- Integration with simple_* - MANDATORY
+- Eiffel idioms compliance - MANDATORY
+
+Constraints: 10 constraints documented with immutability status
+- Technical: DBC, SCOOP-safe, void-safe, simple_* first, ZERO warnings
+- Ecosystem: MIT license, Eiffel 25.02+
+- Performance: CPU-only MVP (mutable in Phase 2)
+- Training: Single-threaded MVP (mutable in Phase 2)
+- Storage: In-memory MVP (mutable in Phase 2)
+
+Use Cases: 6 detailed use cases documented
+1. Train Linear Regression
+2. Train Random Forest
+3. Hyperparameter Tuning (Grid Search)
+4. Cross-Validation (Model Selection)
+5. Feature Scaling (Preprocessing)
+6. Regulatory Audit Trail (Compliance)
+
+Success Metrics: 7 metrics defined for Phases 5-7
+- Algorithm correctness (within IEEE 754 epsilon of reference)
+- Contract completeness (100%)
+- Test coverage (100%)
+- Numerical stability (no NaN/Inf crashes)
+- Performance baseline (<5 sec for typical datasets)
+- Usability (algorithms transparent)
+- Integration (all simple_* dependencies working)
+
+## Decisions Made: 10 major decisions
+
+D-001: Native Implementation (BUILD) vs Wrapping - CHOSEN: BUILD
+Rationale: Eiffel-idiomatic, 100% DBC, algorithms transparent, full control
+Implications: More effort, must ensure correctness, performance trade-off
+
+D-002: MVP Algorithm Selection - CHOSEN: 6 core (Linear, Logistic, Tree, Forest, SVM, NN)
+Rationale: Achievable in Phases 1-3, covers supervised learning paradigm
+Implications: Defers clustering, PCA, time series to Phase 2
+
+D-003: Gradient Descent vs Analytical - CHOSEN: Unified Gradient Descent
+Rationale: Scales from linear to neural networks, reuses simple_optimization
+Implications: Requires hyperparameter tuning, slower than analytical but unifies
+
+D-004: Contract Design for Probabilistic Outputs - CHOSEN: Deterministic Contracts + aggregate testing
+Rationale: Contracts verify structure; tests verify quality
+Implications: Contracts guarantee bounds, postconditions don't guarantee accuracy
+
+D-005: Configuration Pattern - CHOSEN: Builder Pattern with chaining
+Rationale: Fluent, discoverable, modern Eiffel style, matches simple_optimization pattern
+Implications: More typing, but clear and chainable
+
+D-006: Error Handling - CHOSEN: Postconditions + optional status fields
+Rationale: Eiffel-idiomatic, contracts encode assumptions
+Implications: No exceptions for normal ML failures; divergence = trained but not converged
+
+D-007: Model Serialization - CHOSEN: JSON text format (MVP)
+Rationale: Auditable, human-readable, language-agnostic
+Implications: Precision ~15 decimals, Phase 2 can add binary format
+
+D-008: GPU Acceleration - CHOSEN: CPU-only MVP, Phase 2+ evaluate
+Rationale: Focus on verification; measure bottlenecks before deciding
+Implications: No CUDA/OpenCL in Phase 1; Phase 2 research needed
+
+D-009: Hyperparameter Tuning - CHOSEN: Grid Search (MVP)
+Rationale: Simple, deterministic, reproducible, matches contract-verification goal
+Implications: Slow for 5+ parameters; Phase 2 adds random/Bayesian
+
+D-010: Dependencies - CHOSEN: Comprehensive simple_* ecosystem
+Rationale: Reuse verified code, leverage ecosystem strength
+Implications: More dependencies; benefits if simple_* mature
+
+## Innovations Identified: 7 major innovations
+
+I-001: Contract-Verified ML Algorithms
+- First library with Design by Contract ON algorithms themselves
+- Preconditions, postconditions, invariants specify correctness
+- Users can AUDIT algorithms, not black boxes
+- Frame conditions document what data properties are preserved
+
+I-002: Algorithmic Transparency & Educational Value
+- Algorithms in readable Eiffel, not compiled black boxes
+- Students can READ and UNDERSTAND implementations
+- Auditors can VERIFY correctness
+- Regulatory bodies can CERTIFY
+
+I-003: Eiffel Ecosystem Integration
+- Reuse simple_linalg (matrices), simple_optimization (solvers), simple_statistics (distributions)
+- No reinvention; architectural maturity
+- Composable system vs monolithic blob
+
+I-004: Contract-Driven API Design
+- Contracts encode protocols (fit → transform → predict)
+- Compile-time/runtime enforcement of ordering constraints
+- Self-documenting API
+
+I-005: Formal Verification Hooks
+- Design for formal methods tools (SMT, model checking)
+- Healthcare/finance can mathematically certify models
+- Supports FDA, EU AI Act compliance
+
+I-006: Numerical Stability & IEEE 754 Compliance
+- Explicit contracts on finite bounds
+- No silent NaN/Inf failures
+- Postconditions on output boundedness
+
+I-007: Scientific Reproducibility via Contracts
+- Deterministic algorithms with fixed seeds
+- Contract-enforced reproducibility
+- Publication-quality results
+
+## Risks Identified: 10 major risks
+
+RISK-001: Performance Insufficient - MEDIUM/HIGH - Mitigation: MVP targets verification; Phase 2 profiles
+RISK-002: Numerical Stability Issues - LOW/HIGH - Mitigation: Phase 5 validates vs reference; Phase 6 stress tests
+RISK-003: Gradient Descent Divergence for NN - MEDIUM/HIGH - Mitigation: Phase 5 starts with convex; Phase 6 NN stress testing
+RISK-004: Overspecified Contracts - MEDIUM/MEDIUM - Mitigation: Phase 1 conservative; Phase 2 review; Phase 5 empirical tightening
+RISK-005: Upstream Library Bugs - LOW/MEDIUM - Mitigation: Phase 5 integration tests; coordinate with maintainers
+RISK-006: User Expectations (scikit-learn parity) - MEDIUM/MEDIUM - Mitigation: Clear positioning; honest trade-offs documentation
+RISK-007: Market Adoption (niche audience) - MEDIUM/LOW - Mitigation: Academic first; build case studies; fintech outreach
+RISK-008: Regulatory Recognition (contracts vs SMT) - MEDIUM/MEDIUM - Mitigation: Phase 2 SMT integration planning; publish research
+RISK-009: NN Training Failures - MEDIUM/MEDIUM - Mitigation: Phase 5 tests on small datasets; Phase 6 extensive stress testing
+RISK-010: Scope Creep - MEDIUM/MEDIUM - Mitigation: Strict MVP (6 algorithms); clear Phase 2 roadmap
+
+Risk Mitigation Strategy: Phase 1 writes achievable contracts; Phase 2 review catches issues; Phase 5 validates vs reference; Phase 6 identifies bottlenecks; Phase 7 documents lessons
+
+## Recommendation
+
+Action: BUILD (native simple_ml with Design by Contract)
+Confidence: HIGH (80%+)
+
+Rationale:
+1. Unique positioning - NO other library combines ML + formal verification
+2. Eiffel ecosystem synergy - capstone library that ties together optimization, linalg, statistics
+3. Market need - formal verification of ML is emerging (WFVML 2024, Post-AI-FM-26)
+4. Feasibility - 6-algorithm MVP achievable in Phases 1-3
+5. Risk mitigation - clear for all major risks
+
+## Proposed Phases
+
+Phase 1: Intent + Contracts + Skeletal Tests (2 weeks)
+- 6 classes with full require/ensure/invariant
+- Frame conditions using simple_mml
+- Compilation gate: zero warnings
+
+Phase 2: Adversarial Review + Approach (1 week)
+- Contract review by AI chain (Ollama → Claude → Grok → Gemini)
+- Implementation approach documentation
+- Contract refinement based on review
+
+Phase 3: Task Decomposition (3 days, parallel with Phase 2)
+- 20-30 implementation tasks
+- Clear acceptance criteria
+
+Phase 4: Implementation (4-5 weeks)
+- Feature bodies for 6 algorithms
+- Contracts frozen; no modifications
+- ZERO warnings policy
+
+Phase 5: Test Generation + Verification (2 weeks)
+- Comprehensive test suite
+- Validation vs reference implementations (scikit-learn, R)
+- 100% test pass rate mandatory
+
+Phase 6: Adversarial Testing + Hardening (1.5 weeks)
+- Edge cases, stress tests, numerical edge cases
+- Performance profiling
+- Numerical stability verification
+
+Phase 7: Production Release (1 week)
+- Naming conventions verified
+- Documentation site complete
+- README.md, CHANGELOG.md, LICENSE
+- Zero warnings, 100% test pass
+- GitHub publication, v1.0.0 tag
+
+## Success Criteria Status
+
+Phase 1-3 Criteria (before implementation):
+- [x] Scope clearly defined
+- [x] 6 algorithms selected
+- [x] Dependencies identified
+- [x] Requirements documented
+- [x] Decisions made and recorded
+- [x] Risks identified and mitigation planned
+- [x] Market positioning clear
+
+Phase 4-5 Criteria (implementation + testing):
+- [ ] All classes fully implemented (Phase 4)
+- [ ] 100% test pass rate (Phase 5)
+- [ ] Validation vs reference implementations (Phase 5)
+
+Phase 6 Criteria (hardening):
+- [ ] Adversarial tests passing (Phase 6)
+- [ ] Edge cases handled gracefully (Phase 6)
+- [ ] Numerical stability verified (Phase 6)
+
+Phase 7 Criteria (release):
+- [ ] Production release v1.0.0 (Phase 7)
+- [ ] Professional documentation site (Phase 7)
+- [ ] GitHub publication (Phase 7)
+
+## Next Steps
+
+1. Phase 1: Run `/eiffel.intent` to capture refined intent
+2. Then: Run `/eiffel.contracts` to generate class skeletons
+3. Then: Run `/eiffel.review` for adversarial contract review
+4. Continue: Standard Eiffel Spec Kit workflow (Phases 3-7)
+
+## References
+
+60+ references cited across:
+- ML frameworks and libraries (20+)
+- Formal verification and contracts (10+)
+- Eiffel and Design by Contract (5+)
+- Algorithm implementations (8+)
+- Regulatory and governance contexts (7+)
+
+All sources are real, verifiable, and from reputable institutions.
+
+## Status: COMPLETE
+
+Research phase is COMPLETE and APPROVED. Ready for Phase 1 (Intent capture and Contract generation).
+
+Simple_ml has been thoroughly researched and is ready to proceed with design and implementation.

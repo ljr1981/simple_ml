@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookbook - simple_ml</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_ml</h1>
+        <p class="tagline">Code Recipes and Examples</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_ml">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Recipe 1: Simple Linear Regression</h2>
+            <p>Predict house prices from features.</p>
+            <pre><code>-- Training data: 3 houses, 2 features (area, rooms)
+-- Target: price
+training_X := &lt;&lt; &lt;&lt; 100.0, 3.0 &gt;&gt;, &lt;&lt; 150.0, 4.0 &gt;&gt;, &lt;&lt; 200.0, 5.0 &gt;&gt; &gt;&gt;
+training_y := &lt;&lt; 300000.0, 450000.0, 600000.0 &gt;&gt;
+
+-- Create and train model
+model := create {LINEAR_REGRESSION_MODEL}.make
+    .set_learning_rate (0.0001)
+    .set_max_iterations (200)
+
+model.train (training_X, training_y)
+
+-- Predict price for new house: 175 area, 4.5 rooms
+price := model.predict (<< 175.0, 4.5 >>)
+print ("Predicted price: $" + price.out)</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 2: Binary Classification with Logistic Regression</h2>
+            <p>Classify emails as spam (1) or not spam (0).</p>
+            <pre><code>-- Training data: 4 emails, 3 features (word count, sender trust, links)
+training_X := &lt;&lt; &lt;&lt; 100.0, 0.8, 2.0 &gt;&gt;,
+               &lt;&lt; 50.0, 0.9, 0.0 &gt;&gt;,
+               &lt;&lt; 200.0, 0.2, 10.0 &gt;&gt;,
+               &lt;&lt; 30.0, 0.95, 0.0 &gt;&gt; &gt;&gt;
+training_y := &lt;&lt; 0, 0, 1, 0 &gt;&gt;  -- 0 = not spam, 1 = spam
+
+-- Train model
+model := create {LOGISTIC_REGRESSION_MODEL}.make
+    .set_learning_rate (0.01)
+    .set_max_iterations (100)
+
+model.train (training_X, training_y)
+
+-- Check new email
+email_features := &lt;&lt; 150.0, 0.3, 8.0 &gt;&gt;
+is_spam := model.predict (email_features) = 1
+probability_spam := model.predict_proba (email_features)
+
+if is_spam then
+    print ("Email is likely spam (" + (probability_spam * 100).out + "%)")
+else
+    print ("Email appears legitimate")
+end</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 3: Iris Classification with Decision Tree</h2>
+            <p>Classify iris flowers by species using tree-based rules.</p>
+            <pre><code>-- Iris dataset: sepal length, sepal width, petal length, petal width
+-- Classes: 0 = setosa, 1 = versicolor, 2 = virginica
+training_X := &lt;&lt; &lt;&lt; 5.1, 3.5, 1.4, 0.2 &gt;&gt;,
+               &lt;&lt; 7.0, 3.2, 4.7, 1.4 &gt;&gt;,
+               &lt;&lt; 6.3, 3.3, 6.0, 2.5 &gt;&gt;,
+               ... more samples ... &gt;&gt;
+training_y := &lt;&lt; 0, 1, 2, ... &gt;&gt;
+
+-- Create tree with limited depth (prevents overfitting)
+tree := create {DECISION_TREE_CLASSIFIER}.make
+    .set_max_depth (4)
+    .set_min_samples_split (2)
+
+tree.train (training_X, training_y)
+
+-- Classify new iris
+iris := &lt;&lt; 5.5, 3.5, 1.3, 0.2 &gt;&gt;
+species := tree.predict (iris)
+print ("Species: " + species.out)</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 4: Multi-Class Classification with Random Forest</h2>
+            <p>Classify handwritten digits using ensemble voting.</p>
+            <pre><code>-- Digit classification (0-9): flattened 8x8 images = 64 features
+-- Train on 100 samples for each digit
+
+-- Create forest with multiple trees
+forest := create {RANDOM_FOREST_CLASSIFIER}.make
+    .set_num_trees (50)
+    .set_max_depth (8)
+
+forest.train (training_X, training_y)
+
+-- Classify new digit
+digit_image := &lt;&lt; 0.0, 0.1, 0.9, ... &gt;&gt;  -- 64 pixel values
+predicted_digit := forest.predict (digit_image)
+
+-- Get confidence (probability distribution)
+confidence := forest.predict_proba (digit_image)
+print ("Digit: " + predicted_digit.out + " (confidence: " +
+       (confidence [1] * 100).out + "%)")</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 5: Hyperparameter Tuning</h2>
+            <p>Find optimal learning rate for your dataset.</p>
+            <pre><code>-- Test different learning rates
+learning_rates := &lt;&lt; 0.001, 0.005, 0.01, 0.05, 0.1 &gt;&gt;
+best_rate := 0.01
+best_error := 999999.0
+
+across learning_rates as lr_item loop
+    rate := lr_item.item
+
+    -- Create and train with this rate
+    model := create {LINEAR_REGRESSION_MODEL}.make
+        .set_learning_rate (rate)
+        .set_max_iterations (100)
+
+    model.train (training_X, training_y)
+
+    -- Evaluate on validation set
+    error := 0.0
+    across validation_X as sample loop
+        prediction := model.predict (sample.item)
+        expected := validation_y [sample.item.lower]
+        error := error + (prediction - expected).abs
+    end
+    error := error / validation_X.count
+
+    -- Track best
+    if error < best_error then
+        best_error := error
+        best_rate := rate
+    end
+end
+
+print ("Best learning rate: " + best_rate.out)</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 6: Neural Network with Multiple Hidden Layers</h2>
+            <p>Build a deep network for complex patterns.</p>
+            <pre><code>-- Define network architecture
+hidden_sizes := &lt;&lt; 128, 64, 32 &gt;&gt;  -- Three hidden layers
+
+model := create {NEURAL_NETWORK_CLASSIFIER}.make
+    .set_hidden_layers (hidden_sizes)
+    .set_learning_rate (0.001)
+    .set_max_iterations (300)
+
+-- Train on data
+model.train (training_X, training_y)
+
+-- Get predictions with confidence
+test_sample := &lt;&lt; 0.5, 0.3, 0.8, 0.2 &gt;&gt;
+prediction := model.predict (test_sample)
+probabilities := model.predict_proba (test_sample)
+
+-- Find most confident prediction
+max_prob := 0.0
+best_class := prediction
+across probabilities as prob_item loop
+    if prob_item.item > max_prob then
+        max_prob := prob_item.item
+        best_class := prob_item.item.truncated_to_integer
+    end
+end
+
+print ("Predicted class: " + best_class.out)
+print ("Confidence: " + (max_prob * 100).out + "%")</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 7: Train-Test Split and Evaluation</h2>
+            <p>Proper model evaluation with separate test set.</p>
+            <pre><code>-- Load dataset (example with 100 samples)
+full_X: ARRAY [ARRAY [REAL_64]] := ... -- 100 samples
+full_y: ARRAY [INTEGER] := ...
+
+-- Split: 80% training, 20% testing
+split_idx := (full_X.count * 80) / 100
+
+training_X := create {ARRAY [ARRAY [REAL_64]]}.make_filled (
+    create {ARRAY [REAL_64]}.make_filled (0.0, 1, 1), 1, split_idx)
+training_y := create {ARRAY [INTEGER]}.make_filled (0, 1, split_idx)
+test_X := create {ARRAY [ARRAY [REAL_64]]}.make_filled (
+    create {ARRAY [REAL_64]}.make_filled (0.0, 1, 1), 1, full_X.count - split_idx)
+test_y := create {ARRAY [INTEGER]}.make_filled (0, 1, full_X.count - split_idx)
+
+-- Fill training/test sets
+across 1 |..| split_idx as idx loop
+    training_X [idx] := full_X [idx]
+    training_y [idx] := full_y [idx]
+end
+across split_idx + 1 |..| full_X.count as idx loop
+    test_X [idx - split_idx] := full_X [idx]
+    test_y [idx - split_idx] := full_y [idx]
+end
+
+-- Train model
+model := create {LOGISTIC_REGRESSION_MODEL}.make
+    .set_learning_rate (0.01)
+    .set_max_iterations (100)
+
+model.train (training_X, training_y)
+
+-- Evaluate on test set
+correct := 0
+across test_X as sample_item loop
+    prediction := model.predict (sample_item.item)
+    expected := test_y [sample_item.item.lower]
+    if prediction = expected then
+        correct := correct + 1
+    end
+end
+
+accuracy := (correct * 100) / test_X.count
+print ("Test accuracy: " + accuracy.out + "%")</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 8: Model State Checking</h2>
+            <p>Safe error handling with precondition checks.</p>
+            <pre><code>-- Safe prediction with state checking
+predict_safely (model: LINEAR_REGRESSION_MODEL; x: ARRAY [REAL_64]): REAL_64
+    -- Predict with error handling
+    require
+        model_exists: model /= Void
+        input_exists: x /= Void
+    local
+        result_val: REAL_64
+    do
+        if not model.is_trained then
+            print ("ERROR: Model not trained")
+            result_val := 0.0
+        elseif x.count /= model.features_learned.count then
+            print ("ERROR: Feature count mismatch")
+            result_val := 0.0
+        else
+            result_val := model.predict (x)
+        end
+    ensure
+        result_exists: True  -- Always returns a value
+    end</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 9: Batch Predictions</h2>
+            <p>Make predictions on multiple samples efficiently.</p>
+            <pre><code>-- Make predictions on batch of test samples
+model: LOGISTIC_REGRESSION_MODEL := ... -- trained model
+test_samples: ARRAY [ARRAY [REAL_64]] := ... -- 10 samples
+
+predictions := create {ARRAY [INTEGER]}.make_filled (0, 1, test_samples.count)
+
+across test_samples as sample_item loop
+    idx := sample_item.item.lower
+    predictions [idx] := model.predict (sample_item.item)
+end
+
+-- Compute batch statistics
+class_0_count := 0
+class_1_count := 0
+
+across predictions as pred_item loop
+    if pred_item.item = 0 then
+        class_0_count := class_0_count + 1
+    else
+        class_1_count := class_1_count + 1
+    end
+end
+
+print ("Batch results: " + class_0_count.out + " class 0, " +
+       class_1_count.out + " class 1")</code></pre>
+        </section>
+
+        <section>
+            <h2>Recipe 10: Feature Normalization</h2>
+            <p>Normalize features to improve training (manual approach).</p>
+            <pre><code>-- Normalize features to [0, 1] range
+normalize_features (X: ARRAY [ARRAY [REAL_64]]): ARRAY [ARRAY [REAL_64]]
+    local
+        result: ARRAY [ARRAY [REAL_64]]
+        feature_mins: ARRAY [REAL_64]
+        feature_maxs: ARRAY [REAL_64]
+        feature_count: INTEGER
+        i, j: INTEGER
+    do
+        feature_count := X [X.lower].count
+
+        -- Find min/max for each feature
+        create feature_mins.make_filled (999999.0, 1, feature_count)
+        create feature_maxs.make_filled (-999999.0, 1, feature_count)
+
+        across X as sample loop
+            from j := 1 until j > feature_count loop
+                if sample.item [j] < feature_mins [j] then
+                    feature_mins [j] := sample.item [j]
+                end
+                if sample.item [j] > feature_maxs [j] then
+                    feature_maxs [j] := sample.item [j]
+                end
+                j := j + 1
+            end
+        end
+
+        -- Normalize all features
+        create result.make_filled (Void, 1, X.count)
+        across X as sample loop
+            create result [sample.item.lower].make_filled (0.0, 1, feature_count)
+            from j := 1 until j > feature_count loop
+                result [sample.item.lower] [j] :=
+                    (sample.item [j] - feature_mins [j]) /
+                    (feature_maxs [j] - feature_mins [j])
+                j := j + 1
+            end
+        end
+    end</code></pre>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_ml">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>

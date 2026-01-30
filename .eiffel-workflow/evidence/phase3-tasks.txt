@@ -1,0 +1,183 @@
+# Phase 3 Task Decomposition Evidence
+
+**Project:** simple_ml (Machine Learning Library with Design by Contract)
+**Date:** 2026-01-30
+**Status:** COMPLETE - READY FOR PHASE 4
+
+---
+
+## Task Generation
+
+**Tasks created:** 20 implementation tasks across 6 algorithm classes
+
+### Task Distribution
+
+| Algorithm | Tasks | Total Hours |
+|-----------|-------|------------|
+| LINEAR_REGRESSION_MODEL | 4 | 5 |
+| LOGISTIC_REGRESSION_MODEL | 3 | 7 |
+| DECISION_TREE_CLASSIFIER | 3 | 8 |
+| RANDOM_FOREST_CLASSIFIER | 2 | 5 |
+| SVM_LINEAR | 3 | 5 |
+| NEURAL_NETWORK_CLASSIFIER | 3 | 8.5 |
+| MML Queries (all classes) | 1 | 1 |
+| **TOTAL** | **20** | **38.5** |
+
+---
+
+## Coverage Analysis
+
+### Phase 1 Contracts → Phase 3 Tasks
+
+**LINEAR_REGRESSION_MODEL**
+- ✓ make → Task 1
+- ✓ set_learning_rate, set_max_iterations → Task 2
+- ✓ train → Task 3
+- ✓ predict → Task 4
+- ✓ features_learned (MML) → Task 20
+
+**LOGISTIC_REGRESSION_MODEL**
+- ✓ make, set_learning_rate, set_max_iterations → Task 5
+- ✓ train → Task 6
+- ✓ predict, predict_proba → Task 7
+- ✓ classes_learned (MML) → Task 20
+
+**DECISION_TREE_CLASSIFIER**
+- ✓ make, set_max_depth, set_min_samples_split → Task 8
+- ✓ train (with feature_count addition) → Task 9
+- ✓ predict → Task 10
+- ✓ classes_learned (MML) → Task 20
+
+**RANDOM_FOREST_CLASSIFIER**
+- ✓ make, set_num_trees, set_max_depth → Task 11
+- ✓ train → Task 12
+- ✓ predict, predict_proba → Task 13
+- ✓ classes_learned (MML) → Task 20
+
+**SVM_LINEAR**
+- ✓ make, set_c_param, set_tolerance → Task 14
+- ✓ train → Task 15
+- ✓ predict, decision_function → Task 16
+- ✓ classes_learned (MML) → Task 20
+
+**NEURAL_NETWORK_CLASSIFIER**
+- ✓ make, set_hidden_layers, set_learning_rate, set_max_iterations → Task 17
+- ✓ train → Task 18
+- ✓ predict, predict_proba, loss → Task 19
+- ✓ classes_learned (MML) → Task 20
+
+### Completeness Check
+- [X] All public features have tasks
+- [X] All preconditions addressed in task acceptance criteria
+- [X] All postconditions addressed in task acceptance criteria
+- [X] All invariants addressed
+- [X] Dependencies identified and documented
+
+---
+
+## Dependencies Analysis
+
+### Critical Path (Longest Sequence)
+1. Task 1: LR initialization
+2. Task 2: LR configuration
+3. Task 3: LR training (3 hours)
+4. Task 4: LR prediction
+
+**Foundation classes** (others can work in parallel once config is done):
+- Linear Regression: foundation for understanding gradient descent
+- Logistic Regression: extends Linear with sigmoid
+- Decision Tree: independent algorithm
+- Random Forest: depends on Decision Tree working
+- SVM: independent algorithm
+- Neural Network: most complex, independent
+
+### Blocking Dependencies
+- Task 12 (RF training) blocks on Task 10 (DT prediction working correctly)
+- No circular dependencies detected
+
+### Parallelizable Tasks
+- All initialization tasks (1, 5, 8, 11, 14, 17)
+- All configuration tasks (2, 5, 8, 11, 14, 17)
+- Can work on multiple algorithms simultaneously
+
+---
+
+## Estimation & Risk
+
+### Effort Breakdown
+| Complexity | Tasks | Hours | Risk |
+|-----------|-------|-------|------|
+| Simple (≤1h) | 1, 2, 4, 5, 8, 11, 14, 17 | 6.5 | Low |
+| Medium (1-3h) | 6, 7, 10, 12, 13, 16, 19, 20 | 16 | Medium |
+| Complex (3-6h) | 3, 9, 15, 18 | 18 | High |
+
+### Risk Areas
+1. **Task 3 (Linear Regression):** Matrix operations via simple_linalg - risk if API differs
+2. **Task 9 (Decision Tree):** Information gain calculation complexity
+3. **Task 18 (Neural Network):** Backpropagation implementation - most algorithmic complexity
+4. **Task 15 (SVM):** Subgradient descent convergence behavior
+
+### Mitigation
+- Tasks ordered by dependency, not complexity
+- Simpler foundational tasks (LR) first
+- Can debug on smaller algorithms before complex ones
+
+---
+
+## Acceptance Criteria Validation
+
+Every task includes:
+- [X] Clear feature list
+- [X] Specific acceptance criteria (testable)
+- [X] Implementation notes (from approach.md)
+- [X] Dependencies listed
+- [X] Effort estimate
+- [X] Reference to Phase 1 contracts
+
+---
+
+## Quality Assurance
+
+### Checklist
+- [X] All 6 classes represented
+- [X] All public methods covered
+- [X] No duplicate tasks
+- [X] No missing features
+- [X] Dependencies correctly identified
+- [X] Effort estimates realistic (~40 hours total)
+- [X] No circular dependencies
+- [X] MML queries addressed (Task 20)
+
+---
+
+## Approval Status
+
+**Phase 3 Task Decomposition: COMPLETE**
+
+**Ready for Phase 4 (Implementation)?**
+
+User approval required to proceed:
+```
+Approve tasks and proceed to Phase 4 implementation?
+- All 20 tasks defined
+- All dependencies documented
+- Effort: ~40 hours estimated
+- No blocking issues
+```
+
+---
+
+## Next Steps (Phase 4)
+
+Once approved, will proceed with:
+1. /eiffel.implement d:\prod\simple_ml
+2. Task 1-20 implemented in dependency order
+3. Each task: write feature body, compile, verify contracts
+4. Phase 5: Generate comprehensive test suite
+5. Phase 6: Adversarial testing & hardening
+6. Phase 7: Production release
+
+---
+
+**File:** d:\prod\simple_ml\.eiffel-workflow\tasks.md
+**Status:** READY FOR REVIEW AND APPROVAL

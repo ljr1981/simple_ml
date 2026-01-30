@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Guide - simple_ml</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_ml</h1>
+        <p class="tagline">User Guide</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_ml">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Introduction</h2>
+            <p>
+                <strong>simple_ml</strong> provides production-ready implementations of six core machine learning algorithms.
+                Each algorithm is fully specified with Design by Contract, ensuring correctness and safety.
+            </p>
+            <p>
+                This guide covers:
+                <ul>
+                    <li>Installation and setup</li>
+                    <li>Basic model usage patterns</li>
+                    <li>Configuration and hyperparameters</li>
+                    <li>Making predictions</li>
+                    <li>Best practices and performance tips</li>
+                </ul>
+            </p>
+        </section>
+
+        <section>
+            <h2>Installation</h2>
+            <p>Add the following to your ECF (Eiffel Configuration File):</p>
+            <pre><code>&lt;library name="simple_ml" location="$SIMPLE_EIFFEL/simple_ml/simple_ml.ecf"/&gt;</code></pre>
+            <p>
+                Then reference the library classes in your Eiffel code:
+            </p>
+            <pre><code>-- In your class
+model: LINEAR_REGRESSION_MODEL</code></pre>
+        </section>
+
+        <section>
+            <h2>Basic Model Lifecycle</h2>
+            <p>All models follow a consistent lifecycle:</p>
+            <ol>
+                <li><strong>Create</strong> the model: <code>create {MODEL_CLASS}.make</code></li>
+                <li><strong>Configure</strong> hyperparameters: <code>.set_learning_rate(0.01)</code></li>
+                <li><strong>Train</strong> on data: <code>.train(X, y)</code></li>
+                <li><strong>Predict</strong> on new data: <code>.predict(x)</code></li>
+            </ol>
+            <p>Example:</p>
+            <pre><code>-- Create model
+model := create {LINEAR_REGRESSION_MODEL}.make
+
+-- Configure
+model := model.set_learning_rate (0.01)
+model := model.set_max_iterations (100)
+
+-- Train
+model.train (training_X, training_y)
+
+-- Predict
+prediction := model.predict (test_X)</code></pre>
+        </section>
+
+        <section>
+            <h2>Data Format</h2>
+
+            <h3>Training Features (X)</h3>
+            <p>
+                Training features must be <code>ARRAY [ARRAY [REAL_64]]</code>, where:
+                <ul>
+                    <li>Each element is a feature vector (sample)</li>
+                    <li>All vectors must have same length (feature count)</li>
+                    <li>Count must match labels (y)</li>
+                </ul>
+            </p>
+            <pre><code>-- Example: 3 samples, 2 features each
+X := &lt;&lt; &lt;&lt; 1.0, 2.0 &gt;&gt;, &lt;&lt; 3.0, 4.0 &gt;&gt;, &lt;&lt; 5.0, 6.0 &gt;&gt; &gt;&gt;</code></pre>
+
+            <h3>Training Labels (y)</h3>
+            <p>
+                For regression (LINEAR_REGRESSION_MODEL):
+                <ul>
+                    <li><code>ARRAY [REAL_64]</code> - continuous target values</li>
+                </ul>
+            </p>
+            <p>
+                For classification (all other models):
+                <ul>
+                    <li><code>ARRAY [INTEGER]</code> - integer class labels (0, 1, 2, ...)</li>
+                </ul>
+            </p>
+            <pre><code>-- Regression targets
+y_regression := &lt;&lt; 2.0, 4.0, 6.0 &gt;&gt;
+
+-- Classification labels
+y_classes := &lt;&lt; 0, 1, 0 &gt;&gt;</code></pre>
+
+            <h3>Prediction Input (x)</h3>
+            <p>
+                Prediction input is <code>ARRAY [REAL_64]</code> with same feature count as training:
+            </p>
+            <pre><code>-- Predict for one sample with 2 features
+prediction := model.predict (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Hyperparameter Configuration</h2>
+
+            <h3>Learning Rate</h3>
+            <p>
+                Affects gradient descent convergence speed (LINEAR_REGRESSION_MODEL, LOGISTIC_REGRESSION_MODEL, NEURAL_NETWORK_CLASSIFIER).
+            </p>
+            <pre><code>model := model.set_learning_rate (0.001)  -- Small: slow convergence
+model := model.set_learning_rate (0.1)    -- Large: fast but may diverge</code></pre>
+
+            <h3>Maximum Iterations</h3>
+            <p>
+                Training iteration limit (affects convergence quality).
+            </p>
+            <pre><code>model := model.set_max_iterations (100)   -- Default
+model := model.set_max_iterations (1000)  -- More iterations, better fit</code></pre>
+
+            <h3>Tree Depth (Decision Tree, Random Forest)</h3>
+            <p>
+                Limits tree complexity (prevents overfitting).
+            </p>
+            <pre><code>model := model.set_max_depth (5)   -- Shallow tree
+model := model.set_max_depth (20)  -- Deep tree</code></pre>
+
+            <h3>Ensemble Size (Random Forest)</h3>
+            <p>
+                Number of trees in ensemble.
+            </p>
+            <pre><code>model := model.set_num_trees (100)   -- Standard
+model := model.set_num_trees (500)   -- Large ensemble</code></pre>
+
+            <h3>Regularization (SVM)</h3>
+            <p>
+                C parameter balances training fit and generalization.
+            </p>
+            <pre><code>model := model.set_c_param (0.1)    -- Strong regularization
+model := model.set_c_param (1.0)    -- Default
+model := model.set_c_param (10.0)   -- Weak regularization</code></pre>
+
+            <h3>Network Architecture (Neural Network)</h3>
+            <p>
+                Hidden layer sizes.
+            </p>
+            <pre><code>sizes := &lt;&lt; 64, 32 &gt;&gt;  -- Two hidden layers: 64 then 32 neurons
+model := model.set_hidden_layers (sizes)</code></pre>
+        </section>
+
+        <section>
+            <h2>Making Predictions</h2>
+
+            <h3>Regression Predictions</h3>
+            <p>
+                LINEAR_REGRESSION_MODEL returns continuous values:
+            </p>
+            <pre><code>prediction: REAL_64 := model.predict (<< 1.5, 2.5 >>)
+print ("Predicted value: " + prediction.out)</code></pre>
+
+            <h3>Classification Predictions</h3>
+            <p>
+                All classifiers return integer class labels:
+            </p>
+            <pre><code>class_label: INTEGER := model.predict (<< 1.5, 2.5 >>)
+print ("Predicted class: " + class_label.out)</code></pre>
+
+            <h3>Probability Predictions</h3>
+            <p>
+                LOGISTIC_REGRESSION_MODEL and RANDOM_FOREST_CLASSIFIER support probability output:
+            </p>
+            <pre><code>-- Single probability (logistic)
+prob: REAL_64 := logistic_model.predict_proba (<< 1.5, 2.5 >>)
+print ("Probability: " + prob.out)
+
+-- Probability distribution (random forest, neural network)
+probs: ARRAY [REAL_64] := rf_model.predict_proba (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Model State Checking</h2>
+            <p>
+                All models have state queries:
+            </p>
+            <pre><code>if model.is_trained then
+    -- Model can make predictions
+    prediction := model.predict (x)
+else
+    -- Model not trained yet
+    print ("Error: Model not trained")
+end</code></pre>
+
+            <h3>Learned Features (Regression)</h3>
+            <pre><code>features: MML_SET [INTEGER] := model.features_learned
+if features.count = 5 then
+    print ("Model learned 5 features")
+end</code></pre>
+
+            <h3>Learned Classes (Classification)</h3>
+            <pre><code>classes: MML_SET [INTEGER] := model.classes_learned
+if classes.has (0) and classes.has (1) then
+    print ("Binary classification model")
+end</code></pre>
+        </section>
+
+        <section>
+            <h2>Best Practices</h2>
+
+            <h3>Data Preparation</h3>
+            <ul>
+                <li>Normalize/scale features to similar ranges for better convergence</li>
+                <li>Ensure training and test features have same dimensions</li>
+                <li>Use stratified splits for imbalanced classification</li>
+            </ul>
+
+            <h3>Hyperparameter Tuning</h3>
+            <ul>
+                <li>Start with default values (learning_rate=0.01, max_iterations=100)</li>
+                <li>Increase learning rate if convergence is too slow</li>
+                <li>Increase max_iterations if loss is still decreasing at the end</li>
+                <li>Reduce tree depth or increase min_samples_split to prevent overfitting</li>
+            </ul>
+
+            <h3>Model Evaluation</h3>
+            <ul>
+                <li>Always reserve test data (not used for training)</li>
+                <li>Use appropriate metrics for task (MSE for regression, accuracy for classification)</li>
+                <li>Check for signs of overfitting (large train-test gap)</li>
+            </ul>
+
+            <h3>Performance Considerations</h3>
+            <ul>
+                <li>Linear and logistic regression scale well to large datasets</li>
+                <li>Random forests handle high-dimensional data well</li>
+                <li>Neural networks require careful architecture selection</li>
+                <li>Reduce max_iterations or tree depth for faster training</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Error Handling</h2>
+            <p>
+                Models enforce contracts at boundaries:
+            </p>
+            <ul>
+                <li>Preconditions validate inputs at method entry</li>
+                <li>Postconditions guarantee outputs after successful method execution</li>
+                <li>Invariants ensure consistent internal state</li>
+            </ul>
+            <p>
+                If a precondition is violated, execution halts with assertion failure. Always validate inputs before calling model methods.
+            </p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_ml">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>

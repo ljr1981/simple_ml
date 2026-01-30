@@ -1,0 +1,74 @@
+d:\prod\simple_ml\src/decision_tree_classifier.e:19:		ensure
+d:\prod\simple_ml\src/decision_tree_classifier.e:40:		require
+d:\prod\simple_ml\src/decision_tree_classifier.e:45:		ensure
+d:\prod\simple_ml\src/decision_tree_classifier.e:50:			-- Set minimum samples required to split node.
+d:\prod\simple_ml\src/decision_tree_classifier.e:51:		require
+d:\prod\simple_ml\src/decision_tree_classifier.e:56:		ensure
+d:\prod\simple_ml\src/decision_tree_classifier.e:64:		require
+d:\prod\simple_ml\src/decision_tree_classifier.e:73:		ensure
+d:\prod\simple_ml\src/decision_tree_classifier.e:83:		require
+d:\prod\simple_ml\src/decision_tree_classifier.e:88:		ensure
+d:\prod\simple_ml\src/decision_tree_classifier.e:105:			-- Minimum samples required to split.
+d:\prod\simple_ml\src/decision_tree_classifier.e:107:invariant
+d:\prod\simple_ml\src/linear_regression_model.e:19:		ensure
+d:\prod\simple_ml\src/linear_regression_model.e:40:		require
+d:\prod\simple_ml\src/linear_regression_model.e:45:		ensure
+d:\prod\simple_ml\src/linear_regression_model.e:51:		require
+d:\prod\simple_ml\src/linear_regression_model.e:56:		ensure
+d:\prod\simple_ml\src/linear_regression_model.e:64:		require
+d:\prod\simple_ml\src/linear_regression_model.e:73:		ensure
+d:\prod\simple_ml\src/linear_regression_model.e:82:		require
+d:\prod\simple_ml\src/linear_regression_model.e:87:		ensure
+d:\prod\simple_ml\src/linear_regression_model.e:103:invariant
+d:\prod\simple_ml\src/logistic_regression_model.e:20:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:41:		require
+d:\prod\simple_ml\src/logistic_regression_model.e:46:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:52:		require
+d:\prod\simple_ml\src/logistic_regression_model.e:57:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:65:		require
+d:\prod\simple_ml\src/logistic_regression_model.e:74:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:84:		require
+d:\prod\simple_ml\src/logistic_regression_model.e:89:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:95:		require
+d:\prod\simple_ml\src/logistic_regression_model.e:100:		ensure
+d:\prod\simple_ml\src/logistic_regression_model.e:122:invariant
+d:\prod\simple_ml\src/neural_network_classifier.e:21:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:42:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:48:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:54:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:59:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:65:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:70:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:78:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:88:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:98:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:103:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:109:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:115:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:121:		require
+d:\prod\simple_ml\src/neural_network_classifier.e:125:		ensure
+d:\prod\simple_ml\src/neural_network_classifier.e:147:invariant
+d:\prod\simple_ml\src/random_forest_classifier.e:19:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:40:		require
+d:\prod\simple_ml\src/random_forest_classifier.e:45:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:51:		require
+d:\prod\simple_ml\src/random_forest_classifier.e:56:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:64:		require
+d:\prod\simple_ml\src/random_forest_classifier.e:73:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:82:		require
+d:\prod\simple_ml\src/random_forest_classifier.e:87:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:93:		require
+d:\prod\simple_ml\src/random_forest_classifier.e:99:		ensure
+d:\prod\simple_ml\src/random_forest_classifier.e:117:invariant
+d:\prod\simple_ml\src/svm_linear.e:20:		ensure
+d:\prod\simple_ml\src/svm_linear.e:41:		require
+d:\prod\simple_ml\src/svm_linear.e:46:		ensure
+d:\prod\simple_ml\src/svm_linear.e:52:		require
+d:\prod\simple_ml\src/svm_linear.e:57:		ensure
+d:\prod\simple_ml\src/svm_linear.e:65:		require
+d:\prod\simple_ml\src/svm_linear.e:74:		ensure
+d:\prod\simple_ml\src/svm_linear.e:84:		require
+d:\prod\simple_ml\src/svm_linear.e:89:		ensure
+d:\prod\simple_ml\src/svm_linear.e:95:		require
+d:\prod\simple_ml\src/svm_linear.e:100:		ensure
+d:\prod\simple_ml\src/svm_linear.e:122:invariant

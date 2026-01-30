@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Reference - simple_ml</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_ml</h1>
+        <p class="tagline">Complete API Reference</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_ml">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>LINEAR_REGRESSION_MODEL</h2>
+            <p>Supervised learning for continuous value prediction using gradient descent optimization.</p>
+
+            <h3>Creation</h3>
+            <pre><code>create {LINEAR_REGRESSION_MODEL}.make
+-- Creates unconfigured model with defaults:
+-- learning_rate = 0.01
+-- max_iterations = 100</code></pre>
+
+            <h3>Configuration Methods</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Returns</th>
+                    <th>Preconditions</th>
+                </tr>
+                <tr>
+                    <td>set_learning_rate</td>
+                    <td>a_rate: REAL_64</td>
+                    <td>like Current</td>
+                    <td>a_rate > 0.0</td>
+                </tr>
+                <tr>
+                    <td>set_max_iterations</td>
+                    <td>a_max: INTEGER</td>
+                    <td>like Current</td>
+                    <td>a_max > 0</td>
+                </tr>
+            </table>
+
+            <h3>Training</h3>
+            <pre><code>train (a_x: ARRAY [ARRAY [REAL_64]]; a_y: ARRAY [REAL_64])
+-- Train on features and targets using gradient descent
+-- Preconditions:
+--   a_x /= Void and a_x.count > 0
+--   a_y /= Void and a_y.count > 0
+--   a_x.count = a_y.count (same number of samples)
+--   a_x[lower].count > 0 (features per sample)
+-- Postconditions:
+--   is_trained = true
+--   weights.count = feature count</code></pre>
+
+            <h3>Prediction</h3>
+            <pre><code>predict (a_x: ARRAY [REAL_64]): REAL_64
+-- Predict continuous value for input features
+-- Preconditions:
+--   is_trained = true
+--   a_x /= Void and a_x.count = weights.count
+-- Returns: Predicted value</code></pre>
+
+            <h3>Queries</h3>
+            <table>
+                <tr>
+                    <th>Query</th>
+                    <th>Returns</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>is_trained</td>
+                    <td>BOOLEAN</td>
+                    <td>Has model been trained?</td>
+                </tr>
+                <tr>
+                    <td>features_learned</td>
+                    <td>MML_SET [INTEGER]</td>
+                    <td>Set of learned feature indices</td>
+                </tr>
+                <tr>
+                    <td>learning_rate</td>
+                    <td>REAL_64</td>
+                    <td>Current learning rate</td>
+                </tr>
+                <tr>
+                    <td>max_iterations</td>
+                    <td>INTEGER</td>
+                    <td>Current max iterations</td>
+                </tr>
+            </table>
+
+            <h3>Invariants</h3>
+            <ul>
+                <li>learning_rate > 0.0</li>
+                <li>max_iterations > 0</li>
+                <li>is_trained implies (weights /= Void and weights.count > 0)</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>LOGISTIC_REGRESSION_MODEL</h2>
+            <p>Binary and multiclass classification using gradient descent with sigmoid activation.</p>
+
+            <h3>Creation</h3>
+            <pre><code>create {LOGISTIC_REGRESSION_MODEL}.make
+-- Defaults: learning_rate = 0.01, max_iterations = 100</code></pre>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Returns</th>
+                </tr>
+                <tr>
+                    <td>set_learning_rate</td>
+                    <td>a_rate: REAL_64</td>
+                    <td>like Current</td>
+                </tr>
+                <tr>
+                    <td>set_max_iterations</td>
+                    <td>a_max: INTEGER</td>
+                    <td>like Current</td>
+                </tr>
+            </table>
+
+            <h3>Training</h3>
+            <pre><code>train (a_x: ARRAY [ARRAY [REAL_64]]; a_y: ARRAY [INTEGER])
+-- Train on features and class labels
+-- Similar preconditions to LINEAR_REGRESSION_MODEL
+-- Postconditions:
+--   is_trained = true
+--   classes_learned.count >= 2 (supports multiclass)</code></pre>
+
+            <h3>Prediction</h3>
+            <pre><code>predict (a_x: ARRAY [REAL_64]): INTEGER
+-- Predict class label for input features
+-- Postcondition: Result in classes_learned
+
+predict_proba (a_x: ARRAY [REAL_64]): REAL_64
+-- Predict probability for positive class
+-- Postcondition: Result >= 0.0 and Result <= 1.0</code></pre>
+
+            <h3>Queries</h3>
+            <table>
+                <tr>
+                    <th>Query</th>
+                    <th>Returns</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>is_trained</td>
+                    <td>BOOLEAN</td>
+                    <td>Has model been trained?</td>
+                </tr>
+                <tr>
+                    <td>classes_learned</td>
+                    <td>MML_SET [INTEGER]</td>
+                    <td>Set of unique classes learned from data</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>DECISION_TREE_CLASSIFIER</h2>
+            <p>Tree-based classification with configurable depth and minimum samples.</p>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Default</th>
+                </tr>
+                <tr>
+                    <td>set_max_depth</td>
+                    <td>a_depth: INTEGER</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>set_min_samples_split</td>
+                    <td>a_min: INTEGER</td>
+                    <td>2</td>
+                </tr>
+            </table>
+
+            <h3>Training & Prediction</h3>
+            <pre><code>train (a_x: ARRAY [ARRAY [REAL_64]]; a_y: ARRAY [INTEGER])
+-- Train decision tree classifier
+
+predict (a_x: ARRAY [REAL_64]): INTEGER
+-- Predict class using learned tree
+-- Precondition: a_x.count = feature_count from training</code></pre>
+        </section>
+
+        <section>
+            <h2>RANDOM_FOREST_CLASSIFIER</h2>
+            <p>Ensemble of decision trees with configurable number and depth.</p>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Default</th>
+                </tr>
+                <tr>
+                    <td>set_num_trees</td>
+                    <td>a_num: INTEGER</td>
+                    <td>100</td>
+                </tr>
+                <tr>
+                    <td>set_max_depth</td>
+                    <td>a_depth: INTEGER</td>
+                    <td>10</td>
+                </tr>
+            </table>
+
+            <h3>Prediction</h3>
+            <pre><code>predict (a_x: ARRAY [REAL_64]): INTEGER
+-- Predict class by ensemble majority voting
+
+predict_proba (a_x: ARRAY [REAL_64]): ARRAY [REAL_64]
+-- Predict class probabilities
+-- Postcondition: probabilities sum to 1.0</code></pre>
+        </section>
+
+        <section>
+            <h2>SVM_LINEAR</h2>
+            <p>Support Vector Machine with linear kernel for binary and multiclass classification.</p>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Default</th>
+                </tr>
+                <tr>
+                    <td>set_c_param</td>
+                    <td>a_c: REAL_64</td>
+                    <td>1.0</td>
+                </tr>
+                <tr>
+                    <td>set_tolerance</td>
+                    <td>a_tol: REAL_64</td>
+                    <td>0.0001</td>
+                </tr>
+            </table>
+
+            <h3>Methods</h3>
+            <pre><code>predict (a_x: ARRAY [REAL_64]): INTEGER
+-- Predict class label
+
+decision_function (a_x: ARRAY [REAL_64]): REAL_64
+-- Get raw decision value (can be positive or negative)</code></pre>
+        </section>
+
+        <section>
+            <h2>NEURAL_NETWORK_CLASSIFIER</h2>
+            <p>Multi-layer perceptron for classification with configurable architecture.</p>
+
+            <h3>Configuration</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Default</th>
+                </tr>
+                <tr>
+                    <td>set_hidden_layers</td>
+                    <td>a_sizes: ARRAY [INTEGER]</td>
+                    <td>Required</td>
+                </tr>
+                <tr>
+                    <td>set_learning_rate</td>
+                    <td>a_rate: REAL_64</td>
+                    <td>0.01</td>
+                </tr>
+                <tr>
+                    <td>set_max_iterations</td>
+                    <td>a_max: INTEGER</td>
+                    <td>200</td>
+                </tr>
+            </table>
+
+            <h3>Methods</h3>
+            <pre><code>predict (a_x: ARRAY [REAL_64]): INTEGER
+-- Predict class (argmax of probabilities)
+
+predict_proba (a_x: ARRAY [REAL_64]): ARRAY [REAL_64]
+-- Predict class probability distribution
+
+loss: REAL_64
+-- Current model loss (non-negative)</code></pre>
+
+            <h3>Example: Deep Network</h3>
+            <pre><code>sizes := &lt;&lt; 128, 64, 32 &gt;&gt;  -- 3 hidden layers
+model := create {NEURAL_NETWORK_CLASSIFIER}.make
+    .set_hidden_layers (sizes)
+    .set_learning_rate (0.001)
+    .set_max_iterations (500)</code></pre>
+        </section>
+
+        <section>
+            <h2>Common Interfaces</h2>
+
+            <h3>Model States</h3>
+            <p>All models have these state characteristics:</p>
+            <ul>
+                <li>Unconfigured: Created but not trained</li>
+                <li>Configured: Hyperparameters set, ready for training</li>
+                <li>Trained: Successfully trained, ready for prediction</li>
+            </ul>
+
+            <h3>Fluent Configuration</h3>
+            <p>All configuration methods return <code>like Current</code> for chaining:</p>
+            <pre><code>model := create {LINEAR_REGRESSION_MODEL}.make
+    .set_learning_rate (0.01)
+    .set_max_iterations (200)
+    -- Can chain more configuration calls</code></pre>
+
+            <h3>Design by Contract</h3>
+            <p>All classes enforce contracts with preconditions and postconditions:</p>
+            <ul>
+                <li>Preconditions define valid inputs</li>
+                <li>Postconditions guarantee output properties</li>
+                <li>Invariants maintain class consistency</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_ml">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>

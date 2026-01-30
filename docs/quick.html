@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick API Reference - simple_ml</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>simple_ml</h1>
+        <p class="tagline">Quick API Reference</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Overview</a></li>
+            <li><a href="quick.html">QUICK API</a></li>
+            <li><a href="user-guide.html">User Guide</a></li>
+            <li><a href="api-reference.html">API Reference</a></li>
+            <li><a href="architecture.html">Architecture</a></li>
+            <li><a href="cookbook.html">Cookbook</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_ml">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Linear Regression</h2>
+            <pre><code>-- Create and train a linear regression model
+model := create {LINEAR_REGRESSION_MODEL}.make
+    .set_learning_rate (0.01)
+    .set_max_iterations (100)
+
+model.train (training_X, training_y)
+
+-- Make predictions
+prediction := model.predict (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Logistic Regression</h2>
+            <pre><code>-- Binary and multiclass classification
+model := create {LOGISTIC_REGRESSION_MODEL}.make
+    .set_learning_rate (0.01)
+    .set_max_iterations (100)
+
+model.train (training_X, training_y)
+
+-- Predict class
+class_label := model.predict (<< 1.5, 2.5 >>)
+
+-- Get probability
+probability := model.predict_proba (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Decision Tree</h2>
+            <pre><code>-- Tree-based classification
+model := create {DECISION_TREE_CLASSIFIER}.make
+    .set_max_depth (5)
+    .set_min_samples_split (2)
+
+model.train (training_X, training_y)
+
+-- Predict class
+class_label := model.predict (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Random Forest</h2>
+            <pre><code>-- Ensemble of decision trees
+model := create {RANDOM_FOREST_CLASSIFIER}.make
+    .set_num_trees (100)
+    .set_max_depth (10)
+
+model.train (training_X, training_y)
+
+-- Predict class and probabilities
+class_label := model.predict (<< 1.5, 2.5 >>)
+probabilities := model.predict_proba (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Support Vector Machine</h2>
+            <pre><code>-- Linear SVM for classification
+model := create {SVM_LINEAR}.make
+    .set_c_param (1.0)
+    .set_tolerance (0.0001)
+
+model.train (training_X, training_y)
+
+-- Predict and get decision value
+class_label := model.predict (<< 1.5, 2.5 >>)
+decision := model.decision_function (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Neural Network</h2>
+            <pre><code>-- Multi-layer perceptron
+model := create {NEURAL_NETWORK_CLASSIFIER}.make
+    .set_hidden_layers (<< 32, 16 >>)
+    .set_learning_rate (0.01)
+    .set_max_iterations (200)
+
+model.train (training_X, training_y)
+
+-- Predict and get probabilities
+class_label := model.predict (<< 1.5, 2.5 >>)
+probabilities := model.predict_proba (<< 1.5, 2.5 >>)</code></pre>
+        </section>
+
+        <section>
+            <h2>Common Operations</h2>
+
+            <h3>Fluent Configuration</h3>
+            <p>All configuration methods return <code>like Current</code> for method chaining:</p>
+            <pre><code>model := create {LINEAR_REGRESSION_MODEL}.make
+    .set_learning_rate (0.001)
+    .set_max_iterations (500)</code></pre>
+
+            <h3>Training Data Format</h3>
+            <p><code>training_X</code> is an <code>ARRAY [ARRAY [REAL_64]]</code> (rows of features)</p>
+            <p><code>training_y</code> is <code>ARRAY [REAL_64]</code> for regression or <code>ARRAY [INTEGER]</code> for classification</p>
+
+            <h3>Model Queries</h3>
+            <p>Check training status and learned parameters:</p>
+            <pre><code>if model.is_trained then
+    features := model.features_learned  -- for regression
+    classes := model.classes_learned    -- for classification
+end</code></pre>
+
+            <h3>Error Handling</h3>
+            <p>Use preconditions to validate inputs:</p>
+            <pre><code>require
+    x_valid: a_x /= Void and a_x.count > 0
+    y_valid: a_y /= Void and a_y.count > 0
+    same_length: a_x.count = a_y.count</code></pre>
+        </section>
+
+        <section>
+            <h2>API Summary</h2>
+
+            <table>
+                <tr>
+                    <th>Class</th>
+                    <th>Key Methods</th>
+                    <th>Output Type</th>
+                </tr>
+                <tr>
+                    <td>LINEAR_REGRESSION_MODEL</td>
+                    <td>train, predict</td>
+                    <td>REAL_64</td>
+                </tr>
+                <tr>
+                    <td>LOGISTIC_REGRESSION_MODEL</td>
+                    <td>train, predict, predict_proba</td>
+                    <td>INTEGER / REAL_64</td>
+                </tr>
+                <tr>
+                    <td>DECISION_TREE_CLASSIFIER</td>
+                    <td>train, predict</td>
+                    <td>INTEGER</td>
+                </tr>
+                <tr>
+                    <td>RANDOM_FOREST_CLASSIFIER</td>
+                    <td>train, predict, predict_proba</td>
+                    <td>INTEGER / ARRAY [REAL_64]</td>
+                </tr>
+                <tr>
+                    <td>SVM_LINEAR</td>
+                    <td>train, predict, decision_function</td>
+                    <td>INTEGER / REAL_64</td>
+                </tr>
+                <tr>
+                    <td>NEURAL_NETWORK_CLASSIFIER</td>
+                    <td>train, predict, predict_proba, loss</td>
+                    <td>INTEGER / ARRAY [REAL_64]</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <p>
+                <ul>
+                    <li><a href="user-guide.html"><strong>User Guide</strong></a> - Detailed examples and explanations</li>
+                    <li><a href="api-reference.html"><strong>API Reference</strong></a> - Complete class documentation</li>
+                    <li><a href="cookbook.html"><strong>Cookbook</strong></a> - Real-world usage patterns</li>
+                </ul>
+            </p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Simple Eiffel Contributors. MIT License.</p>
+            <p><a href="https://github.com/simple-eiffel/simple_ml">GitHub Repository</a></p>
+        </footer>
+    </main>
+</body>
+</html>
