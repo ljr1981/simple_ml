@@ -21,3 +21,6 @@ Thumbs.db
 *.tmp
 *.bak
 *.swp
+*.melted
+*.epr
+*.log
