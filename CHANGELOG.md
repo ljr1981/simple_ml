@@ -2,6 +2,12 @@
 
 All notable changes to simple_ml will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- The test target never switched contracts on (no `<assertions>` in the ECF). It now enables precondition, postcondition, check, invariant, loop and supplier_precondition; the suite passes with them on.
+
 ## [1.1.0] - 2026-01-30
 
 ### Added

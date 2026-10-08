@@ -26,6 +26,9 @@
 
 	<target name="simple_ml_tests" extends="simple_ml">
 		<root class="TEST_APP" feature="make"/>
+		<option warning="warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
 		<cluster name="tests" location=".\test\" recursive="true"/>
 	</target>
 </system>
