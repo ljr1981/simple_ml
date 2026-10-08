@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <system name="simple_ml" uuid="5FEDA0FC-88D6-4C1B-A9C5-88D12A891234" library_target="simple_ml">
 	<target name="simple_ml">
-		<root class="SIMPLE_ML" feature="make"/>
+		<root class="SIMPLE_ML"/>
 		<setting name="total_order_on_reals" value="true"/>
 		<capability>
 			<concurrency support="scoop"/>

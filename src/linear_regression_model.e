@@ -77,8 +77,6 @@ feature -- Training
 			l_gradient: ARRAY [REAL_64]
 			l_i: INTEGER
 			l_j: INTEGER
-			l_stats: STATISTICS
-			l_mean_error: REAL_64
 		do
 			l_feature_count := a_x [a_x.lower].count
 			l_sample_count := a_x.count
