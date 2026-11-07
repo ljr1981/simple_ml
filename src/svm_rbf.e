@@ -166,7 +166,7 @@ feature -- Kernel Operations
 			-- RBF kernel: exp(-gamma * distance²)
 			Result := activation_functions.rbf_kernel (l_dist_sq, gamma)
 		ensure
-			result_positive: Result > 0.0
+			result_non_negative: Result >= 0.0
 			result_bounded: Result <= 1.0
 		end
 

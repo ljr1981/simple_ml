@@ -91,7 +91,7 @@ feature -- Splitting
 			l_fold_size := a_X.count // k
 
 			-- Create k folds
-			create folds.make (1, k)
+			create folds.make_empty
 			from l_i := 1 until l_i > k loop
 				-- Calculate test fold boundaries
 				l_fold_start := (l_i - 1) * l_fold_size
@@ -102,9 +102,9 @@ feature -- Splitting
 				end
 
 				-- Create training and test arrays for this fold
-				create l_train_x.make (1, a_X.count - (l_fold_end - l_fold_start + 1))
+				create l_train_x.make_filled (create {ARRAY [REAL_64]}.make_empty, 1, a_X.count - (l_fold_end - l_fold_start + 1))
 				create l_train_y.make (1, l_train_x.count)
-				create l_test_x.make (1, l_fold_end - l_fold_start + 1)
+				create l_test_x.make_filled (create {ARRAY [REAL_64]}.make_empty, 1, l_fold_end - l_fold_start + 1)
 				create l_test_y.make (1, l_test_x.count)
 
 				-- Populate test set
@@ -128,7 +128,7 @@ feature -- Splitting
 				end
 
 				-- Create FOLD for this split
-				folds [l_i] := create {FOLD}.make (l_train_x, l_train_y, l_test_x, l_test_y)
+				folds.force (create {FOLD}.make (l_train_x, l_train_y, l_test_x, l_test_y), l_i)
 				l_i := l_i + 1
 			end
 		ensure

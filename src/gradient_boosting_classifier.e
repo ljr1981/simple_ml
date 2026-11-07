@@ -30,9 +30,13 @@ feature -- Configuration
 
 	set_n_estimators (a_n: INTEGER): like Current
 			-- Set number of weak learners (trees) in ensemble.
+			-- A different size invalidates any earlier training.
 		require
 			positive_n: a_n > 0
 		do
+			if a_n /= n_estimators then
+				is_trained := False
+			end
 			n_estimators := a_n
 			Result := Current
 		ensure

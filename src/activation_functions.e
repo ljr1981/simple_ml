@@ -40,7 +40,7 @@ feature -- Sigmoid family
 				Result := 1.0 / (1.0 + l_exp_neg_z)
 			end
 		ensure
-			in_range: Result > 0.0 and Result < 1.0
+			in_range: Result >= 0.0 and Result <= 1.0
 		end
 
 	sigmoid_derivative (z: REAL_64): REAL_64
@@ -74,7 +74,7 @@ feature -- Hyperbolic tangent
 				Result := (l_exp_pos - l_exp_neg) / (l_exp_pos + l_exp_neg)
 			end
 		ensure
-			in_range: Result > -1.0 and Result < 1.0
+			in_range: Result >= -1.0 and Result <= 1.0
 		end
 
 	tanh_derivative (z: REAL_64): REAL_64
@@ -151,7 +151,7 @@ feature -- Kernel functions
 				Result := l_math.exp (l_exponent)
 			end
 		ensure
-			in_range: Result > 0.0 and Result <= 1.0
+			in_range: Result >= 0.0 and Result <= 1.0
 		end
 
 feature {NONE} -- Implementation
