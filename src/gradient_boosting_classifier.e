@@ -225,8 +225,6 @@ invariant
 	n_estimators_positive: n_estimators > 0
 	learning_rate_valid: learning_rate > 0.0 and learning_rate <= 1.0
 	max_depth_positive: max_depth > 0
-	weak_learners_count_matches: (
-		weak_learners.count = n_estimators
-	)
+	weak_learners_count_matches: is_trained implies weak_learners.count = n_estimators
 
 end
