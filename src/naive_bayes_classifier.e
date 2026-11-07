@@ -65,8 +65,8 @@ feature -- Training
 
 			-- Initialize priors and feature statistics
 			create class_priors.make (1, l_class_count)
-			create feature_means.make (1, l_class_count)
-			create feature_variances.make (1, l_class_count)
+			create feature_means.make_filled (create {ARRAY [REAL_64]}.make_empty, 1, l_class_count)
+			create feature_variances.make_filled (create {ARRAY [REAL_64]}.make_empty, 1, l_class_count)
 
 			-- Compute class priors and feature distributions
 			from l_c_idx := 1 until l_c_idx > l_class_count loop

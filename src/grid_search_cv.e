@@ -14,7 +14,7 @@ feature {NONE} -- Initialization
 		do
 			cv_folds := 5
 			create param_grid.make (10)
-			create results.make (1, 1)
+			create results.make_filled ([create {HASH_TABLE [REAL_64, STRING]}.make (1), 0.0], 1, 1)
 			best_score := 0.0
 			create best_params.make (1)
 		ensure
@@ -78,7 +78,7 @@ feature -- Execution
 
 			-- Store result
 			best_score := l_sum_score / cv_folds
-			create results.make (1, 1)
+			create results.make_filled ([create {HASH_TABLE [REAL_64, STRING]}.make (1), 0.0], 1, 1)
 			create best_params.make (1)
 		ensure
 			search_complete: results.count >= 1
